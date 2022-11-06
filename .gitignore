@@ -1,2 +1,9 @@
 .idea
 __pycache__
+py-timeout-utils-venv
+py-timeout-venv
+timeout.egg-info
+dist
+build
+html
+htmlcov

@@ -1,0 +1,5 @@
+Click==8.0.4
+pyaml==21.10.1
+coverage==6.3.2
+flake8==4.0.1
+Sphinx==4.4.0

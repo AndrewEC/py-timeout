@@ -10,30 +10,23 @@ class TimeoutTests(unittest.TestCase):
 
     def test_function_that_will_timeout(self):
         with self.assertRaises(TimeoutException):
-            function_that_will_timeout()
+            timeout(3)(function_that_will_timeout)()
 
     def test_function_that_will_return_result(self):
-        result = function_that_will_return_result()
+        result = timeout(3)(lambda: TimeoutTests.FUNCTION_RESULT)()
         self.assertEqual(TimeoutTests.FUNCTION_RESULT, result)
 
     def test_function_that_will_throw_exception(self):
         with self.assertRaises(ValueError) as context:
-            function_that_will_throw_exception()
+            timeout(3)(function_that_will_throw_exception)()
         self.assertEqual(TimeoutTests.FUNCTION_RESULT, str(context.exception))
 
 
-@timeout(3)
 def function_that_will_timeout():
     while True:
         pass
 
 
-@timeout(3)
-def function_that_will_return_result() -> str:
-    return TimeoutTests.FUNCTION_RESULT
-
-
-@timeout(3)
 def function_that_will_throw_exception():
     raise ValueError(TimeoutTests.FUNCTION_RESULT)
 
