@@ -1,18 +1,27 @@
 from typing import TypeVar, Generic, Callable
 
-from .container import ValueContainer
+from .atomic_reference import AtomicReference
 from .function_executor import FunctionExecutorThread, CombinedExecutionContainer
-
+from .. import FunctionResultContainer
 
 T = TypeVar('T')
 
 
 class PrimitiveFunctionExecutor(CombinedExecutionContainer[T], Generic[T]):
 
+    """
+    A bare-bones implementation of a CombinedExecutionContainer. This implementation simply takes in a single niladic
+    function, executes it, and captures either the output of the function or an exception if one was raised by said
+    function.
+
+    The result or exception of the underlying function are housed in AtomicReferences and, as such, can be
+    accessed in a threadsafe manner.
+    """
+
     def __init__(self, function: Callable[[], T]):
         self._function = function
-        self._result = ValueContainer[T]()
-        self._exception = ValueContainer[Exception]()
+        self._result = AtomicReference[T]()
+        self._exception = AtomicReference[Exception]()
 
     def execute(self):
         try:
@@ -24,27 +33,28 @@ class PrimitiveFunctionExecutor(CombinedExecutionContainer[T], Generic[T]):
     def get_exception(self) -> Exception | None:
         return self._exception.get_value()
 
-    def get_result(self) -> T | None:
+    def get_return_value(self) -> T | None:
         return self._result.get_value()
 
 
 class PrimitiveFunctionExecutorThread(FunctionExecutorThread[T], Generic[T]):
 
+    """
+    A bare-bones implementation of a FunctionExecutorThread.
+    """
+
     def __init__(self, executor: CombinedExecutionContainer[T]):
         super().__init__()
         self._executor = executor
-        self._running = ValueContainer[bool](False)
+        self._running = AtomicReference[bool](False)
 
     def run(self) -> None:
         self._running.set_value(True)
         self._executor.execute()
         self._running.set_value(False)
 
-    def get_exception(self) -> Exception | None:
-        return self._executor.get_exception()
-
-    def get_result(self) -> T | None:
-        return self._executor.get_result()
+    def get_execution_result(self) -> FunctionResultContainer[T]:
+        return self._executor
 
     def is_running(self) -> bool:
         return self._running.get_value()
