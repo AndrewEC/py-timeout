@@ -10,8 +10,8 @@ def timeout(timeout_seconds: int):
     The separate thread will have the functionality to wait for the function to complete and return its result or
     raise a TimeoutException if the function cannot finish executing within the specified timeout interval.
 
-    :param timeout_seconds: The number of second to wait for the given function to complete execution before
-    forcing the thread running the function to quit.
+    :param timeout_seconds: The number of seconds to wait for the given function to complete execution before
+        forcing the thread running the function to quit.
     :return: The wrapped function to be invoked in place of the function being decorated.
     """
 

@@ -34,7 +34,7 @@ class FunctionResultContainer(Generic[T]):
         underlying function executed "successfully" and exited without raising anything.
 
         :return: The exception captured during the execution of an underlying function, or None if no exception was
-        captured.
+            captured.
         """
         pass
 

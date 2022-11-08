@@ -15,7 +15,7 @@ class TimeoutThread(Thread):
     be responsible for the execution of an underlying function.
 
     When used this thread allows the FunctionExecutorThread to be executed and monitored with the purpose of
-    allowing the thread to complete if it does so within the specified execution time or forcefully terminating
+    allowing the thread to complete, if it does so within the specified execution time, or forcefully terminating
     the thread and raising an exception when the execution of the monitored thread exceeds the configured value.
     """
 
