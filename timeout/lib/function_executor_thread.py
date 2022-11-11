@@ -10,11 +10,11 @@ T = TypeVar('T')
 class PrimitiveFunctionExecutor(CombinedExecutionContainer[T], Generic[T]):
 
     """
-    A bare-bones implementation of a CombinedExecutionContainer. This implementation simply takes in a single niladic
-    function, executes it, and captures either the output of the function or an exception if one was raised by said
-    function.
+    A bare-bones implementation of a CombinedExecutionContainer. This implementation simply takes in a single
+    parameterless function, executes it, and captures either the output of the function or an exception if one was
+    raised by said function.
 
-    The result or exception of the underlying function are housed in AtomicReferences and, as such, can be
+    The result, or exception, of the underlying function are housed in AtomicReferences and, as such, can be
     accessed in a threadsafe manner.
     """
 

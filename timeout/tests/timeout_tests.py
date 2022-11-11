@@ -29,4 +29,3 @@ def function_that_will_timeout():
 
 def function_that_will_throw_exception():
     raise ValueError(TimeoutTests.FUNCTION_RESULT)
-
