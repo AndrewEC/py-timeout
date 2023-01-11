@@ -25,7 +25,7 @@ class TimeoutThread(Thread):
         super().__init__()
         self._execution_exception = AtomicReference[Exception]()
         self._execution_timeout = execution_timeout
-        self._wait_iterations = math.floor(int(execution_timeout / TimeoutThread._WAIT_TIME))
+        self._wait_iterations = math.ceil(int(execution_timeout / TimeoutThread._WAIT_TIME))
         self._thread_to_monitor = thread_to_monitor
 
     def run(self) -> None:

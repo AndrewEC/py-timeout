@@ -9,7 +9,7 @@ T = TypeVar('T')
 class AtomicReference(Generic[T]):
 
     """
-    A reference container that allows multiple threads safely to access or swap in a value.
+    A reference container that allows multiple threads to safely access or swap in a value.
 
     This does not make the underlying value being accessed or swapped in threadsafe. This merely provides a way
     for multiple threads to safely set or read said value from this reference.
