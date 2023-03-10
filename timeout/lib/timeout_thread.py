@@ -1,3 +1,4 @@
+from typing import Generic, TypeVar
 from threading import Thread
 from time import sleep
 import math
@@ -8,7 +9,10 @@ from .atomic_reference import AtomicReference
 from .timeout_exception import TimeoutException
 
 
-class TimeoutThread(Thread):
+T = TypeVar('T')
+
+
+class TimeoutThread(Thread, Generic[T]):
 
     """
     A thread for monitoring the execution of a FunctionExecutorThread in which said FunctionExecutorThread will
@@ -21,7 +25,7 @@ class TimeoutThread(Thread):
 
     _WAIT_TIME = 0.25
 
-    def __init__(self, execution_timeout: int, thread_to_monitor: FunctionExecutorThread):
+    def __init__(self, execution_timeout: int, thread_to_monitor: FunctionExecutorThread[T]):
         super().__init__()
         self._execution_exception = AtomicReference[Exception]()
         self._execution_timeout = execution_timeout
@@ -81,3 +85,6 @@ class TimeoutThread(Thread):
         :return: None if the monitored thread completed execution in a timely manner, otherwise a TimeoutException
         """
         return self._execution_exception.get_value()
+
+    def get_thread_being_executed(self) -> FunctionExecutorThread[T]:
+        return self._thread_to_monitor

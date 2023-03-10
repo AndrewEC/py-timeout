@@ -1,4 +1,4 @@
-from abc import abstractmethod, ABCMeta
+from abc import abstractmethod
 from typing import TypeVar, Generic
 from threading import Thread
 
@@ -17,13 +17,7 @@ class FunctionExecutor(Generic[T]):
         pass
 
 
-class FunctionResultContainer(Generic[T]):
-
-    """
-    A container allowing one to access the result of the execution of an underlying function. The result could
-    either be a concrete value returned by said function or an exception that was raised during the function's
-    execution.
-    """
+class FunctionResultProvider(Generic[T]):
 
     @abstractmethod
     def get_exception(self) -> Exception | None:
@@ -53,13 +47,6 @@ class FunctionResultContainer(Generic[T]):
         pass
 
 
-class CombinedExecutionContainer(Generic[T], FunctionExecutor[T], FunctionResultContainer[T], metaclass=ABCMeta):
-    """
-    When used allows one to execute an underlying function, capture its result, and retrieve said result.
-    """
-    pass
-
-
 class FunctionExecutorThread(Thread, Generic[T]):
 
     """
@@ -68,7 +55,7 @@ class FunctionExecutorThread(Thread, Generic[T]):
     """
 
     @abstractmethod
-    def get_execution_result(self) -> FunctionResultContainer[T]:
+    def get_execution_result(self) -> FunctionResultProvider[T]:
         """
         Returns the function result container containing the result of the execution of the underlying function.
 

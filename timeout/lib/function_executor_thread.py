@@ -1,21 +1,18 @@
 from typing import TypeVar, Generic, Callable
 
 from .atomic_reference import AtomicReference
-from .function_executor import FunctionExecutorThread, CombinedExecutionContainer
-from .. import FunctionResultContainer
+from .function_executor import FunctionExecutorThread, FunctionExecutor, FunctionResultProvider
 
 T = TypeVar('T')
 
 
-class PrimitiveFunctionExecutor(CombinedExecutionContainer[T], Generic[T]):
+class PrimitiveFunctionExecutor(FunctionExecutor[T], FunctionResultProvider[T], Generic[T]):
 
     """
-    A bare-bones implementation of a CombinedExecutionContainer. This implementation simply takes in a single
-    parameterless function, executes it, and captures either the output of the function or an exception if one was
-    raised by said function.
+    A bare-bones implementation of a FunctionExecutor and FunctionResultProvider.
 
-    The result, or exception, of the underlying function are housed in AtomicReferences and, as such, can be
-    accessed in a threadsafe manner.
+    Provides the functionality to execute the parameterless input function and store either the result or the
+    exception if one was raised.
     """
 
     def __init__(self, function: Callable[[], T]):
@@ -41,9 +38,12 @@ class PrimitiveFunctionExecutorThread(FunctionExecutorThread[T], Generic[T]):
 
     """
     A bare-bones implementation of a FunctionExecutorThread.
+
+    Provides the functionality to invoke the function executor and track whether the function is currently in
+    process of executing within the thread.
     """
 
-    def __init__(self, executor: CombinedExecutionContainer[T]):
+    def __init__(self, executor: PrimitiveFunctionExecutor[T]):
         super().__init__()
         self._executor = executor
         self._running = AtomicReference[bool](False)
@@ -53,7 +53,7 @@ class PrimitiveFunctionExecutorThread(FunctionExecutorThread[T], Generic[T]):
         self._executor.execute()
         self._running.set_value(False)
 
-    def get_execution_result(self) -> FunctionResultContainer[T]:
+    def get_execution_result(self) -> FunctionResultProvider[T]:
         return self._executor
 
     def is_running(self) -> bool:
@@ -62,4 +62,4 @@ class PrimitiveFunctionExecutorThread(FunctionExecutorThread[T], Generic[T]):
 
 def wrap_function_in_executor_thread(function: Callable[[], T]) -> FunctionExecutorThread[T]:
     executor = PrimitiveFunctionExecutor[T](function)
-    return PrimitiveFunctionExecutorThread(executor)
+    return PrimitiveFunctionExecutorThread[T](executor)
