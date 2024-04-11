@@ -1,4 +1,4 @@
-from typing import Callable, TypeVar, Generic
+from typing import Callable, TypeVar
 
 from .function_executor_thread import wrap_function_in_executor_thread, FunctionExecutorThread
 from .timeout_thread import TimeoutThread
